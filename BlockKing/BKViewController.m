@@ -17,10 +17,14 @@
 
 // Animation Behaviors
 @property (nonatomic, strong) UIDynamicAnimator *dynamicAnimator;
-@property (strong, nonatomic) UIGravityBehavior *gravity;
-@property (strong, nonatomic) UICollisionBehavior *collision;
+@property (nonatomic, strong) UIGravityBehavior *gravity;
+@property (nonatomic, strong) UICollisionBehavior *collision;
+@property (nonatomic, strong) UIPushBehavior *push;
+@property (nonatomic, strong) UIDynamicItemBehavior *bulletItemBehavior;
+@property (nonatomic, strong) UIDynamicItemBehavior *blockItemBehavior;
 
 @property (nonatomic, strong) NSMutableArray *allBlocks; // Array of UIView blocks
+@property (nonatomic, strong) NSMutableArray *allBullets; // Array of UIView bullets
 @end
 
 @implementation BKViewController
@@ -43,6 +47,14 @@
     return _allBlocks;
 }
 
+// Lazy instantiation
+- (NSMutableArray *)allBullets
+{
+    if (!_allBullets) {
+        _allBullets = [[NSMutableArray alloc] init];
+    }
+    return _allBullets;
+}
 
 #pragma mark - Shooting Area methods
 
@@ -74,14 +86,47 @@
 // Adds the tap Gesture to shooting area
 - (void)addTapGestureRecognizer
 {
-    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(fireBullet)];
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(fireBullet:)];
     [self.shootingAreaView addGestureRecognizer:tapGesture];
 }
 
-- (void)fireBullet
+#define BULLET_SIZE 20.0
+
+// Creates a bullet (circle) and fires it
+- (void)fireBullet:(UITapGestureRecognizer *)tapGesture
 {
+    // Creates location of bullet
+    CGPoint location = [tapGesture locationOfTouch:0 inView:self.view];
+    CGFloat x = location.x - BULLET_SIZE / 2;
+    CGFloat y = location.y - BULLET_SIZE / 2;
+    CGRect bulletViewRect = CGRectMake(x, y, BULLET_SIZE, BULLET_SIZE);
+    bulletViewRect.origin.y -= (y + BULLET_SIZE - self.shootingAreaView.frame.origin.y);
     
-    NSLog(@"Fire Bullet");
+    // Creates a bulletView
+    UIView *bulletView = [[UIView alloc] initWithFrame:bulletViewRect];
+    bulletView.layer.cornerRadius = BULLET_SIZE / 2;
+    [bulletView setBackgroundColor:[UIColor blackColor]];
+    
+    // Adds the bullet to the view
+    [self addBulletBehavior:bulletView];
+    [self.view addSubview:bulletView];
+    [self.allBullets addObject:bulletView];
+    
+    // Removes the bullet after one second
+    [NSTimer scheduledTimerWithTimeInterval:1.0f
+                                     target:self
+                                   selector:@selector(removeBullet:)
+                                   userInfo:nil
+                                    repeats:NO];
+}
+
+// Removes bullet from view
+- (void)removeBullet:(NSTimer *)timer
+{
+    UIView *bulletView = [self.allBullets firstObject];
+    [self.allBullets removeObjectAtIndex:0];
+    [self removeBulletBehavior:bulletView];
+    [bulletView removeFromSuperview];
 }
 
 #pragma mark - Game Design
@@ -190,8 +235,10 @@
 }
 
 float droppingBlockTimeInterval = 2.0;
+float minDropTimeInterval = .2;
 #define BLOCK_SIZE 40
 #define BLOCK_OFFSET_Y 40
+#define BLOCK_BORDER_WIDTH 1.0
 
 // Starts dropping blocks every second
 - (void)startDroppingBlocks
@@ -201,8 +248,15 @@ float droppingBlockTimeInterval = 2.0;
                                    selector:@selector(dropBlock:)
                                    userInfo:nil
                                     repeats:NO];
+    [NSTimer scheduledTimerWithTimeInterval:.2f
+                                     target:self
+                                   selector:@selector(updateBlocks:)
+                                   userInfo:nil
+                                    repeats:YES];
     
 }
+
+#define MAX_BLOCKS 50
 
 // Drops block and decreases time interval
 - (void)dropBlock:(NSTimer *)timer
@@ -214,14 +268,25 @@ float droppingBlockTimeInterval = 2.0;
     // Creates a block view with color
     UIView *blockView = [[UIView alloc] initWithFrame:blockRect];
     [blockView setBackgroundColor:[self randomColor]];
+    blockView.layer.borderColor = [[UIColor blackColor] CGColor];
+    blockView.layer.borderWidth = BLOCK_BORDER_WIDTH;
     
     // Adds behavior to block ands adds block to view
     [self addBlockBehavior:blockView];
     [self.view addSubview:blockView];
     [self.allBlocks addObject:blockView];
+
+    // Stop game is there are a lot of blocks
+    if ([self.allBlocks count] > MAX_BLOCKS) {
+        [self stopGame];
+        return;
+    }
     
     // Decrease time interval
-    droppingBlockTimeInterval -= .1;
+    if (droppingBlockTimeInterval > minDropTimeInterval) {
+        droppingBlockTimeInterval -= .1;
+
+    }
     [NSTimer scheduledTimerWithTimeInterval:droppingBlockTimeInterval
                                      target:self
                                    selector:@selector(dropBlock:)
@@ -229,11 +294,56 @@ float droppingBlockTimeInterval = 2.0;
                                     repeats:NO];
 }
 
+// Stops the game and pops up an alert
+- (void)stopGame
+{
+    // Stops the timer
+    [self.timer invalidate];
+    self.timer = nil;
+    
+    // Displays game over message
+    NSString *gameOverMessage = [NSString stringWithFormat:@"GAME OVER. TIME: %@", [self.timerText.string substringFromIndex:TIMER_STRING_LENGTH]];
+    [self alert:gameOverMessage];
+}
+
+// Shows an alert view containing the following message
+- (void)alert:(NSString *)msg
+{
+    [[[UIAlertView alloc] initWithTitle:@"BlockKing"
+                                message:msg
+                               delegate:nil
+                      cancelButtonTitle:nil
+                      otherButtonTitles:@"Ok", nil] show];
+}
+
+
+// Removes all blocks that are not on screen from view
+- (void)updateBlocks:(NSTimer *)timer
+{
+    // Gather the blocks to remove and removes them
+    NSMutableArray *removeBlocks = [[NSMutableArray alloc] init];
+    [self.allBlocks enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        if ([obj isKindOfClass:[UIView class]]) {
+            CGPoint centerPoint = CGPointMake(((UIView *)obj).frame.origin.x + BLOCK_SIZE / 2, ((UIView *)obj).frame.origin.y + BLOCK_SIZE / 2);
+            if (!CGRectContainsPoint(self.view.frame, centerPoint)) {
+                [removeBlocks addObject:obj];
+            }
+        }
+    }];
+    
+    [removeBlocks enumerateObjectsWithOptions:NSEnumerationReverse
+                                   usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                                       [self removeBlockBehavior:(UIView *)obj];
+                                       [(UIView *)obj removeFromSuperview];
+                                   }];
+    [self.allBlocks removeObjectsInArray:removeBlocks];
+}
+
 // Returns a random color
 - (UIColor *)randomColor
 {
-    NSArray *randomColor = [[NSArray alloc] initWithObjects:[UIColor redColor], [UIColor blueColor], [UIColor blackColor],
-                            [UIColor yellowColor], [UIColor greenColor], [UIColor grayColor], nil];
+    NSArray *randomColor = [[NSArray alloc] initWithObjects:[UIColor redColor], [UIColor blueColor],
+                            [UIColor yellowColor], [UIColor greenColor], nil];
     return randomColor[arc4random_uniform([randomColor count])];
 }
 
@@ -248,12 +358,14 @@ float droppingBlockTimeInterval = 2.0;
     return _dynamicAnimator;
 }
 
+#define GRAVITY_MAGNITUDE 1.0
+
 // Lazy instantiation
 - (UIDynamicBehavior *)gravity
 {
     if (!_gravity) {
         _gravity = [[UIGravityBehavior alloc] init];
-        _gravity.magnitude = .9;
+        _gravity.magnitude = GRAVITY_MAGNITUDE;
         [self.dynamicAnimator addBehavior:_gravity];
     }
     return _gravity;
@@ -263,13 +375,58 @@ float droppingBlockTimeInterval = 2.0;
 - (UICollisionBehavior *)collision
 {
     if (!_collision) {
+        // Adds bottom, left, and right boundary
         _collision = [[UICollisionBehavior alloc] init];
         [_collision addBoundaryWithIdentifier:@"ShootingAreaBoundary"
                                     fromPoint:self.shootingAreaView.frame.origin
                                       toPoint:CGPointMake(self.shootingAreaView.frame.origin.x + self.shootingAreaView.frame.size.width, self.shootingAreaView.frame.origin.y)];
+        [_collision addBoundaryWithIdentifier:@"LeftBoundary"
+                                    fromPoint:self.view.frame.origin
+                                      toPoint:CGPointMake(self.view.frame.origin.x, self.view.frame.origin.y + self.view.frame.size.height)];
+        [_collision addBoundaryWithIdentifier:@"RightBoundary"
+                                    fromPoint:CGPointMake(self.view.frame.origin.x + self.view.frame.size.width, self.view.frame.origin.y)
+                                      toPoint:CGPointMake(self.view.frame.origin.x + self.view.frame.size.width, self.view.frame.origin.y + self.view.frame.size.height)];
         [self.dynamicAnimator addBehavior:_collision];
     }
     return _collision;
+}
+
+#define PUSH_FORCE -5.0
+
+// Lazy instantiation
+- (UIPushBehavior *)push
+{
+    if (!_push) {
+        _push = [[UIPushBehavior alloc] init];
+        _push.pushDirection = CGVectorMake(0, PUSH_FORCE);
+        [self.dynamicAnimator addBehavior:_push];
+    }
+    return _push;
+}
+
+#define BULLET_ITEM_DENSITY 10.0
+
+// Lazy instantiation
+- (UIDynamicItemBehavior *)bulletItemBehavior
+{
+    if (!_bulletItemBehavior) {
+        _bulletItemBehavior = [[UIDynamicItemBehavior alloc] init];
+        [_bulletItemBehavior setDensity:BULLET_ITEM_DENSITY];
+        [self.dynamicAnimator addBehavior:_bulletItemBehavior];
+    }
+    return _bulletItemBehavior;
+}
+
+#define BLOCK_ITEM_ELASTICITY .4
+
+- (UIDynamicItemBehavior *)blockItemBehavior
+{
+    if (!_blockItemBehavior) {
+        _blockItemBehavior = [[UIDynamicItemBehavior alloc] init];
+        [_blockItemBehavior setElasticity:BLOCK_ITEM_ELASTICITY];
+        [self.dynamicAnimator addBehavior:_blockItemBehavior];
+    }
+    return _blockItemBehavior;
 }
 
 // Adds block behavior for view
@@ -277,7 +434,31 @@ float droppingBlockTimeInterval = 2.0;
 {
     [self.gravity addItem:block];
     [self.collision addItem:block];
+    [self.blockItemBehavior addItem:block];
 }
 
+// Adds bullet behavior for view
+- (void)addBulletBehavior:(UIView *)bullet
+{
+    [self.collision addItem:bullet];
+    [self.push addItem:bullet];
+    [self.bulletItemBehavior addItem:bullet];
+}
+
+// Removes a block behavior
+- (void)removeBlockBehavior:(UIView *)block
+{
+    [self.gravity removeItem:block];
+    [self.collision removeItem:block];
+    [self.blockItemBehavior removeItem:block];
+}
+
+// Removes bullet behavior
+- (void)removeBulletBehavior:(UIView *)bullet
+{
+    [self.collision removeItem:bullet];
+    [self.push removeItem:bullet];
+    [self.bulletItemBehavior removeItem:bullet];
+}
 
 @end
