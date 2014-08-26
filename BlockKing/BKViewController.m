@@ -9,25 +9,21 @@
 #import "BKViewController.h"
 
 @interface BKViewController ()
-// Stores height of blocks to drop from top of device
-@property (nonatomic, strong) NSNumber *height;
 
 @property (nonatomic, strong) UIView *shootingAreaView; // Shooting area view
 @property (nonatomic, strong) NSMutableAttributedString *timerText; // Text to display time
 @property (nonatomic, strong) UILabel *timerLabel; // Label to display time
 @property (nonatomic, strong) NSTimer *timer;
+
+// Animation Behaviors
+@property (nonatomic, strong) UIDynamicAnimator *dynamicAnimator;
+@property (strong, nonatomic) UIGravityBehavior *gravity;
+@property (strong, nonatomic) UICollisionBehavior *collision;
+
+@property (nonatomic, strong) NSMutableArray *allBlocks; // Array of UIView blocks
 @end
 
 @implementation BKViewController
-
-// Lazy instantiation
-- (NSNumber *)height
-{
-    if (!_height) {
-        _height = [[NSNumber alloc] initWithInt:0];
-    }
-    return _height;
-}
 
 // Designs the game and starts the game
 - (void)viewDidLoad
@@ -36,6 +32,15 @@
     [self addTapGestureRecognizer];
     [self drawTimer];
     [self startGame];
+}
+
+// Lazy instantiation
+- (NSMutableArray *)allBlocks
+{
+    if (!_allBlocks) {
+        _allBlocks = [[NSMutableArray alloc] init];
+    }
+    return _allBlocks;
 }
 
 
@@ -75,13 +80,14 @@
 
 - (void)fireBullet
 {
+    
     NSLog(@"Fire Bullet");
 }
 
 #pragma mark - Game Design
 
-#define TEXT_HEIGHT 30.0
-#define INITIALIZE_HEIGHT_OFFSET 30.0
+#define TEXT_HEIGHT 20.0
+#define TEXT_HEIGHT_OFFSET_Y 20.0
 #define TEXT_SIZE 20.0
 #define TIMER_STRING_LENGTH 7 // Length of string Timer:
 
@@ -91,7 +97,7 @@
     if (!_timerLabel) {
         // Draws label on top right of screen
         CGFloat x = 0;
-        CGFloat y = INITIALIZE_HEIGHT_OFFSET;
+        CGFloat y = TEXT_HEIGHT_OFFSET_Y;
         CGFloat width = self.view.bounds.size.width;
         CGFloat height = TEXT_HEIGHT;
         CGRect timerLabelRect = CGRectMake(x, y, width, height);
@@ -183,11 +189,95 @@
     self.timerLabel.attributedText = self.timerText;
 }
 
+float droppingBlockTimeInterval = 2.0;
+#define BLOCK_SIZE 40
+#define BLOCK_OFFSET_Y 40
+
+// Starts dropping blocks every second
 - (void)startDroppingBlocks
 {
+    [NSTimer scheduledTimerWithTimeInterval:droppingBlockTimeInterval
+                                     target:self
+                                   selector:@selector(dropBlock:)
+                                   userInfo:nil
+                                    repeats:NO];
     
 }
 
+// Drops block and decreases time interval
+- (void)dropBlock:(NSTimer *)timer
+{
+    // Creates random frame for block
+    CGFloat x = ((int)(arc4random_uniform(self.view.bounds.size.width) / BLOCK_SIZE)) * BLOCK_SIZE;
+    CGRect blockRect = CGRectMake(x, BLOCK_OFFSET_Y, BLOCK_SIZE, BLOCK_SIZE);
+    
+    // Creates a block view with color
+    UIView *blockView = [[UIView alloc] initWithFrame:blockRect];
+    [blockView setBackgroundColor:[self randomColor]];
+    
+    // Adds behavior to block ands adds block to view
+    [self addBlockBehavior:blockView];
+    [self.view addSubview:blockView];
+    [self.allBlocks addObject:blockView];
+    
+    // Decrease time interval
+    droppingBlockTimeInterval -= .1;
+    [NSTimer scheduledTimerWithTimeInterval:droppingBlockTimeInterval
+                                     target:self
+                                   selector:@selector(dropBlock:)
+                                   userInfo:nil
+                                    repeats:NO];
+}
+
+// Returns a random color
+- (UIColor *)randomColor
+{
+    NSArray *randomColor = [[NSArray alloc] initWithObjects:[UIColor redColor], [UIColor blueColor], [UIColor blackColor],
+                            [UIColor yellowColor], [UIColor greenColor], [UIColor grayColor], nil];
+    return randomColor[arc4random_uniform([randomColor count])];
+}
+
+#pragma mark - Animation
+
+// Lazy instantiation
+- (UIDynamicAnimator *)dynamicAnimator
+{
+    if (!_dynamicAnimator) {
+        _dynamicAnimator = [[UIDynamicAnimator alloc] init];
+    }
+    return _dynamicAnimator;
+}
+
+// Lazy instantiation
+- (UIDynamicBehavior *)gravity
+{
+    if (!_gravity) {
+        _gravity = [[UIGravityBehavior alloc] init];
+        _gravity.magnitude = .9;
+        [self.dynamicAnimator addBehavior:_gravity];
+    }
+    return _gravity;
+}
+
+// Lazy instantiation
+- (UICollisionBehavior *)collision
+{
+    if (!_collision) {
+        _collision = [[UICollisionBehavior alloc] init];
+        [_collision addBoundaryWithIdentifier:@"ShootingAreaBoundary"
+                                    fromPoint:self.shootingAreaView.frame.origin
+                                      toPoint:CGPointMake(self.shootingAreaView.frame.origin.x + self.shootingAreaView.frame.size.width, self.shootingAreaView.frame.origin.y)];
+        [self.dynamicAnimator addBehavior:_collision];
+    }
+    return _collision;
+}
+
+// Adds block behavior for view
+- (void)addBlockBehavior:(UIView *)block
+{
+    [self.gravity addItem:block];
+    [self.collision addItem:block];
+}
 
 
 @end
