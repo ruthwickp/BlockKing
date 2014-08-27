@@ -8,7 +8,7 @@
 
 #import "BKViewController.h"
 
-@interface BKViewController ()
+@interface BKViewController () <UIAlertViewDelegate>
 
 @property (nonatomic, strong) UIView *shootingAreaView; // Shooting area view
 @property (nonatomic, strong) NSMutableAttributedString *timerText; // Text to display time
@@ -25,6 +25,11 @@
 
 @property (nonatomic, strong) NSMutableArray *allBlocks; // Array of UIView blocks
 @property (nonatomic, strong) NSMutableArray *allBullets; // Array of UIView bullets
+
+@property (nonatomic) float droppingBlockTimeInterval; // Stores time interval for blocks
+@property (nonatomic) int min; // Minutes passed during game play
+@property (nonatomic) int sec; // Seconds passed during game play
+
 @end
 
 @implementation BKViewController
@@ -140,7 +145,7 @@
 - (UILabel *)timerLabel
 {
     if (!_timerLabel) {
-        // Draws label on top right of screen
+        // Draws label on top left of screen
         CGFloat x = 0;
         CGFloat y = TEXT_HEIGHT_OFFSET_Y;
         CGFloat width = self.view.bounds.size.width;
@@ -194,6 +199,8 @@
 // Starts the timer
 - (void)startTimer
 {
+    self.sec = 0;
+    self.min = 0;
     self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0f
                                                   target:self
                                                 selector:@selector(updateTimerLabel:)
@@ -204,27 +211,25 @@
 - (void)updateTimerLabel:(NSTimer *)timer
 {
     // Increments the time
-    static int sec = 0;
-    static int min = 0;
-    sec++;
-    if (sec > 59) {
-        sec = 0;
-        min++;
+    self.sec++;
+    if (self.sec > 59) {
+        self.sec = 0;
+        self.min++;
     }
     
     // Creates a time string
     NSString *timeString;
-    if (min < 10 && sec < 10) {
-        timeString = [NSString stringWithFormat:@"0%d.0%d", min, sec];
+    if (self.min < 10 && self.sec < 10) {
+        timeString = [NSString stringWithFormat:@"0%d.0%d", self.min, self.sec];
     }
-    else if (min < 10 && sec >= 10) {
-        timeString = [NSString stringWithFormat:@"0%d.%d", min, sec];
+    else if (self.min < 10 && self.sec >= 10) {
+        timeString = [NSString stringWithFormat:@"0%d.%d", self.min, self.sec];
     }
-    else if (min >= 10 && sec < 10) {
-        timeString = [NSString stringWithFormat:@"%d.0%d", min, sec];
+    else if (self.min >= 10 && self.sec < 10) {
+        timeString = [NSString stringWithFormat:@"%d.0%d", self.min, self.sec];
     }
     else {
-        timeString = [NSString stringWithFormat:@"%d.%d", min, sec];
+        timeString = [NSString stringWithFormat:@"%d.%d", self.min, self.sec];
     }
     
     // Updates timer label
@@ -234,8 +239,7 @@
     self.timerLabel.attributedText = self.timerText;
 }
 
-float droppingBlockTimeInterval = 2.0;
-float minDropTimeInterval = .2;
+#define MIN_DROP_TIME_INTERVAL .2
 #define BLOCK_SIZE 40
 #define BLOCK_OFFSET_Y 40
 #define BLOCK_BORDER_WIDTH 1.0
@@ -243,7 +247,8 @@ float minDropTimeInterval = .2;
 // Starts dropping blocks every second
 - (void)startDroppingBlocks
 {
-    [NSTimer scheduledTimerWithTimeInterval:droppingBlockTimeInterval
+    self.droppingBlockTimeInterval = 2.0;
+    [NSTimer scheduledTimerWithTimeInterval:self.droppingBlockTimeInterval
                                      target:self
                                    selector:@selector(dropBlock:)
                                    userInfo:nil
@@ -283,11 +288,11 @@ float minDropTimeInterval = .2;
     }
     
     // Decrease time interval
-    if (droppingBlockTimeInterval > minDropTimeInterval) {
-        droppingBlockTimeInterval -= .1;
+    if (self.droppingBlockTimeInterval > MIN_DROP_TIME_INTERVAL) {
+        self.droppingBlockTimeInterval -= .1;
 
     }
-    [NSTimer scheduledTimerWithTimeInterval:droppingBlockTimeInterval
+    [NSTimer scheduledTimerWithTimeInterval:self.droppingBlockTimeInterval
                                      target:self
                                    selector:@selector(dropBlock:)
                                    userInfo:nil
@@ -301,6 +306,9 @@ float minDropTimeInterval = .2;
     [self.timer invalidate];
     self.timer = nil;
     
+    // Sets time property
+    self.time = [self.timerText.string substringFromIndex:TIMER_STRING_LENGTH];
+    
     // Displays game over message
     NSString *gameOverMessage = [NSString stringWithFormat:@"GAME OVER. TIME: %@", [self.timerText.string substringFromIndex:TIMER_STRING_LENGTH]];
     [self alert:gameOverMessage];
@@ -311,9 +319,17 @@ float minDropTimeInterval = .2;
 {
     [[[UIAlertView alloc] initWithTitle:@"BlockKing"
                                 message:msg
-                               delegate:nil
+                               delegate:self
                       cancelButtonTitle:nil
                       otherButtonTitles:@"Ok", nil] show];
+}
+
+#define UNWIND_SEGUE_IDENTIFIER @"Finished Game"
+
+// Dismisses view controller when user clicks okay
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    [self performSegueWithIdentifier:UNWIND_SEGUE_IDENTIFIER sender:self];
 }
 
 

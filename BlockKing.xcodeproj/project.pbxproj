@@ -22,6 +22,7 @@
 		7D4FF48E19AB7AC700505594 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D4FF46D19AB7AC700505594 /* UIKit.framework */; };
 		7D4FF49619AB7AC700505594 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7D4FF49419AB7AC700505594 /* InfoPlist.strings */; };
 		7D4FF49819AB7AC700505594 /* BlockKingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4FF49719AB7AC700505594 /* BlockKingTests.m */; };
+		7D525DCD19AD2A690008D470 /* BKHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D525DCC19AD2A690008D470 /* BKHomeViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,8 @@
 		7D4FF49319AB7AC700505594 /* BlockKingTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BlockKingTests-Info.plist"; sourceTree = "<group>"; };
 		7D4FF49519AB7AC700505594 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		7D4FF49719AB7AC700505594 /* BlockKingTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BlockKingTests.m; sourceTree = "<group>"; };
+		7D525DCB19AD2A690008D470 /* BKHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKHomeViewController.h; sourceTree = "<group>"; };
+		7D525DCC19AD2A690008D470 /* BKHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKHomeViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +120,8 @@
 				7D4FF47819AB7AC700505594 /* BKAppDelegate.h */,
 				7D4FF47919AB7AC700505594 /* BKAppDelegate.m */,
 				7D4FF47B19AB7AC700505594 /* Main_iPhone.storyboard */,
+				7D525DCB19AD2A690008D470 /* BKHomeViewController.h */,
+				7D525DCC19AD2A690008D470 /* BKHomeViewController.m */,
 				7D4FF47E19AB7AC700505594 /* Main_iPad.storyboard */,
 				7D4FF48119AB7AC700505594 /* BKViewController.h */,
 				7D4FF48219AB7AC700505594 /* BKViewController.m */,
@@ -256,6 +261,7 @@
 			files = (
 				7D4FF48319AB7AC700505594 /* BKViewController.m in Sources */,
 				7D4FF47619AB7AC700505594 /* main.m in Sources */,
+				7D525DCD19AD2A690008D470 /* BKHomeViewController.m in Sources */,
 				7D4FF47A19AB7AC700505594 /* BKAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -472,6 +478,7 @@
 				7D4FF49D19AB7AC700505594 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7D4FF49E19AB7AC700505594 /* Build configuration list for PBXNativeTarget "BlockKingTests" */ = {
 			isa = XCConfigurationList;
@@ -480,6 +487,7 @@
 				7D4FF4A019AB7AC700505594 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

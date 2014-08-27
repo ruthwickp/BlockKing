@@ -10,4 +10,6 @@
 
 @interface BKViewController : UIViewController
 
+// Time representing game score
+@property (nonatomic, strong) NSString *time;
 @end
