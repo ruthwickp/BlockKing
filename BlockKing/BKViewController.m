@@ -15,6 +15,8 @@
 @property (nonatomic, strong) UILabel *timerLabel; // Label to display time
 @property (nonatomic, strong) NSTimer *timer;
 
+@property (nonatomic, strong) UILabel *blocksLabel; // Displays number of blocks on screen
+
 // Animation Behaviors
 @property (nonatomic, strong) UIDynamicAnimator *dynamicAnimator;
 @property (nonatomic, strong) UIGravityBehavior *gravity;
@@ -40,6 +42,7 @@
     [super viewDidLoad];
     [self addTapGestureRecognizer];
     [self drawTimer];
+    [self drawBlocksLabel];
     [self startGame];
 }
 
@@ -160,6 +163,24 @@
 }
 
 // Lazy instantiation
+- (UILabel *)blocksLabel
+{
+    if (!_blocksLabel) {
+        // Draws label on top right of screen
+        CGFloat x = self.view.bounds.size.width / 2;
+        CGFloat y = TEXT_HEIGHT_OFFSET_Y;
+        CGFloat width = self.view.bounds.size.width / 2;
+        CGFloat height = TEXT_HEIGHT;
+        CGRect blocksLabelRect = CGRectMake(x, y, width, height);
+        
+        // Creates label and adds it to view
+        _blocksLabel = [[UILabel alloc] initWithFrame:blocksLabelRect];
+        [self.view addSubview:_blocksLabel];
+    }
+    return _blocksLabel;
+}
+
+// Lazy instantiation
 - (NSMutableAttributedString *)timerText
 {
     if (!_timerText) {
@@ -186,6 +207,20 @@
 - (void)drawTimer
 {
     self.timerLabel.attributedText = self.timerText;
+}
+
+// Draws text for blocks label
+- (void)drawBlocksLabel
+{
+    NSMutableAttributedString *blockText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"Blocks: %d", [self.allBlocks count]]];
+    [blockText addAttribute:NSForegroundColorAttributeName
+                      value:[UIColor blackColor]
+                      range:NSMakeRange(0, blockText.length)];
+    [blockText addAttribute:NSFontAttributeName
+                      value:[UIFont fontWithName:@"Verdana-BoldItalic" size:TEXT_SIZE]
+                      range:NSMakeRange(0, blockText.length)];
+    
+    self.blocksLabel.attributedText = blockText;
 }
 
 #pragma mark - Game Play
@@ -217,6 +252,13 @@
         self.min++;
     }
     
+    // Ends game is time reaches and hour
+    if (self.min > 59) {
+        [self.timer invalidate];
+        self.timer = nil;
+        [self alert:@"Congratulation. You won."];
+    }
+    
     // Creates a time string
     NSString *timeString;
     if (self.min < 10 && self.sec < 10) {
@@ -239,7 +281,15 @@
     self.timerLabel.attributedText = self.timerText;
 }
 
+#define STARTING_DROP_BLOCK_TIME_INTERVAL 1.0
 #define MIN_DROP_TIME_INTERVAL .2
+
+
+
+
+
+//#define STARTING_DROP_BLOCK_TIME_INTERVAL 5.0
+//#define MIN_DROP_TIME_INTERVAL 1
 #define BLOCK_SIZE 40
 #define BLOCK_OFFSET_Y 40
 #define BLOCK_BORDER_WIDTH 1.0
@@ -247,7 +297,7 @@
 // Starts dropping blocks every second
 - (void)startDroppingBlocks
 {
-    self.droppingBlockTimeInterval = 2.0;
+    self.droppingBlockTimeInterval = STARTING_DROP_BLOCK_TIME_INTERVAL;
     [NSTimer scheduledTimerWithTimeInterval:self.droppingBlockTimeInterval
                                      target:self
                                    selector:@selector(dropBlock:)
@@ -292,6 +342,7 @@
         self.droppingBlockTimeInterval -= .1;
 
     }
+    
     [NSTimer scheduledTimerWithTimeInterval:self.droppingBlockTimeInterval
                                      target:self
                                    selector:@selector(dropBlock:)
@@ -353,6 +404,9 @@
                                        [(UIView *)obj removeFromSuperview];
                                    }];
     [self.allBlocks removeObjectsInArray:removeBlocks];
+    
+    // Redraws block label
+    [self drawBlocksLabel];
 }
 
 // Returns a random color

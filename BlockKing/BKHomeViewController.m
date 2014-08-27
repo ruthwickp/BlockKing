@@ -8,15 +8,42 @@
 
 #import "BKHomeViewController.h"
 #import "BKViewController.h"
+#import <CoreData/CoreData.h>
+#import "Score.h"
+#import "BKAppDelegate.h"
+
+@interface BKHomeViewController ()
+@property (nonatomic, strong) NSManagedObjectContext *context;
+@end
 
 @implementation BKHomeViewController
+
+// Lazy instantiation
+- (NSManagedObjectContext *)context
+{
+    if (!_context) {
+        BKAppDelegate *appDelegate = (BKAppDelegate *)[[UIApplication sharedApplication] delegate];
+        _context = appDelegate.context;
+    }
+    return _context;
+}
 
 // Unwind segue
 - (IBAction)finishedGame:(UIStoryboardSegue *)segue
 {
     if ([segue.sourceViewController isKindOfClass:[BKViewController class]]) {
-        NSLog(@"Finished game");
+        BKViewController *gameViewController = segue.sourceViewController;
+        [self createScore:gameViewController.time];
     }
+}
+
+// Creates the score in core data
+- (void)createScore:(NSString *)score
+{
+    Score *scoreManagedObject = [NSEntityDescription insertNewObjectForEntityForName:@"Score"
+                                                 inManagedObjectContext:self.context];
+    scoreManagedObject.gameScore = score;
+    scoreManagedObject.time = [NSDate date];
 }
 
 @end

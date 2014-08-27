@@ -23,6 +23,10 @@
 		7D4FF49619AB7AC700505594 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7D4FF49419AB7AC700505594 /* InfoPlist.strings */; };
 		7D4FF49819AB7AC700505594 /* BlockKingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4FF49719AB7AC700505594 /* BlockKingTests.m */; };
 		7D525DCD19AD2A690008D470 /* BKHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D525DCC19AD2A690008D470 /* BKHomeViewController.m */; };
+		7D525DD019ADA0200008D470 /* BlockKing.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7D525DCE19ADA0200008D470 /* BlockKing.xcdatamodeld */; };
+		7D525DD319ADA0720008D470 /* Score.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D525DD219ADA0720008D470 /* Score.m */; };
+		7D525DD519ADA1C60008D470 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D525DD419ADA1C60008D470 /* CoreData.framework */; };
+		7D80B59019AE2414001769C5 /* BKHighScoresViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D80B58F19AE2414001769C5 /* BKHighScoresViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +62,12 @@
 		7D4FF49719AB7AC700505594 /* BlockKingTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BlockKingTests.m; sourceTree = "<group>"; };
 		7D525DCB19AD2A690008D470 /* BKHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKHomeViewController.h; sourceTree = "<group>"; };
 		7D525DCC19AD2A690008D470 /* BKHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKHomeViewController.m; sourceTree = "<group>"; };
+		7D525DCF19ADA0200008D470 /* BlockKing.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BlockKing.xcdatamodel; sourceTree = "<group>"; };
+		7D525DD119ADA0720008D470 /* Score.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Score.h; sourceTree = "<group>"; };
+		7D525DD219ADA0720008D470 /* Score.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Score.m; sourceTree = "<group>"; };
+		7D525DD419ADA1C60008D470 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		7D80B58E19AE2414001769C5 /* BKHighScoresViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKHighScoresViewController.h; sourceTree = "<group>"; };
+		7D80B58F19AE2414001769C5 /* BKHighScoresViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKHighScoresViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +75,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D525DD519ADA1C60008D470 /* CoreData.framework in Frameworks */,
 				7D4FF46C19AB7AC700505594 /* CoreGraphics.framework in Frameworks */,
 				7D4FF46E19AB7AC700505594 /* UIKit.framework in Frameworks */,
 				7D4FF46A19AB7AC700505594 /* Foundation.framework in Frameworks */,
@@ -106,6 +117,7 @@
 		7D4FF46819AB7AC700505594 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7D525DD419ADA1C60008D470 /* CoreData.framework */,
 				7D4FF46919AB7AC700505594 /* Foundation.framework */,
 				7D4FF46B19AB7AC700505594 /* CoreGraphics.framework */,
 				7D4FF46D19AB7AC700505594 /* UIKit.framework */,
@@ -125,6 +137,11 @@
 				7D4FF47E19AB7AC700505594 /* Main_iPad.storyboard */,
 				7D4FF48119AB7AC700505594 /* BKViewController.h */,
 				7D4FF48219AB7AC700505594 /* BKViewController.m */,
+				7D80B58E19AE2414001769C5 /* BKHighScoresViewController.h */,
+				7D80B58F19AE2414001769C5 /* BKHighScoresViewController.m */,
+				7D525DCE19ADA0200008D470 /* BlockKing.xcdatamodeld */,
+				7D525DD119ADA0720008D470 /* Score.h */,
+				7D525DD219ADA0720008D470 /* Score.m */,
 				7D4FF48419AB7AC700505594 /* Images.xcassets */,
 				7D4FF47019AB7AC700505594 /* Supporting Files */,
 			);
@@ -259,7 +276,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D80B59019AE2414001769C5 /* BKHighScoresViewController.m in Sources */,
+				7D525DD319ADA0720008D470 /* Score.m in Sources */,
 				7D4FF48319AB7AC700505594 /* BKViewController.m in Sources */,
+				7D525DD019ADA0200008D470 /* BlockKing.xcdatamodeld in Sources */,
 				7D4FF47619AB7AC700505594 /* main.m in Sources */,
 				7D525DCD19AD2A690008D470 /* BKHomeViewController.m in Sources */,
 				7D4FF47A19AB7AC700505594 /* BKAppDelegate.m in Sources */,
@@ -490,6 +510,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		7D525DCE19ADA0200008D470 /* BlockKing.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				7D525DCF19ADA0200008D470 /* BlockKing.xcdatamodel */,
+			);
+			currentVersion = 7D525DCF19ADA0200008D470 /* BlockKing.xcdatamodel */;
+			path = BlockKing.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 7D4FF45E19AB7AC700505594 /* Project object */;
 }

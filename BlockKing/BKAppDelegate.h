@@ -12,4 +12,7 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
+// Context for core data
+@property (strong, nonatomic) NSManagedObjectContext *context;
+
 @end
