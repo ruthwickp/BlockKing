@@ -7,6 +7,7 @@
 //
 
 #import "BKAppDelegate.h"
+#import <CoreData/CoreData.h>
 
 @interface BKAppDelegate ()
 @property (strong, nonatomic) UIManagedDocument *document;
@@ -73,15 +74,25 @@
     }
 }
 
+// Saves context when entering background
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [self saveContext];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    [self saveContext];
+}
+
+- (void)saveContext
+{
+    NSError *error;
+    [self.context save:&error];
+    if (error) {
+        NSLog(@"Error when saving");
+    }
 }
 
 @end

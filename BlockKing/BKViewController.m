@@ -281,15 +281,8 @@
     self.timerLabel.attributedText = self.timerText;
 }
 
-#define STARTING_DROP_BLOCK_TIME_INTERVAL 1.0
-#define MIN_DROP_TIME_INTERVAL .2
-
-
-
-
-
-//#define STARTING_DROP_BLOCK_TIME_INTERVAL 5.0
-//#define MIN_DROP_TIME_INTERVAL 1
+#define STARTING_DROP_BLOCK_TIME_INTERVAL 5.0
+#define MIN_DROP_TIME_INTERVAL .5
 #define BLOCK_SIZE 40
 #define BLOCK_OFFSET_Y 40
 #define BLOCK_BORDER_WIDTH 1.0

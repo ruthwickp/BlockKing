@@ -27,6 +27,7 @@
 		7D525DD319ADA0720008D470 /* Score.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D525DD219ADA0720008D470 /* Score.m */; };
 		7D525DD519ADA1C60008D470 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D525DD419ADA1C60008D470 /* CoreData.framework */; };
 		7D80B59019AE2414001769C5 /* BKHighScoresViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D80B58F19AE2414001769C5 /* BKHighScoresViewController.m */; };
+		7D80B59319AE3E4A001769C5 /* BKRulesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D80B59219AE3E4A001769C5 /* BKRulesViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +69,8 @@
 		7D525DD419ADA1C60008D470 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		7D80B58E19AE2414001769C5 /* BKHighScoresViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKHighScoresViewController.h; sourceTree = "<group>"; };
 		7D80B58F19AE2414001769C5 /* BKHighScoresViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKHighScoresViewController.m; sourceTree = "<group>"; };
+		7D80B59119AE3E4A001769C5 /* BKRulesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKRulesViewController.h; sourceTree = "<group>"; };
+		7D80B59219AE3E4A001769C5 /* BKRulesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRulesViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +142,8 @@
 				7D4FF48219AB7AC700505594 /* BKViewController.m */,
 				7D80B58E19AE2414001769C5 /* BKHighScoresViewController.h */,
 				7D80B58F19AE2414001769C5 /* BKHighScoresViewController.m */,
+				7D80B59119AE3E4A001769C5 /* BKRulesViewController.h */,
+				7D80B59219AE3E4A001769C5 /* BKRulesViewController.m */,
 				7D525DCE19ADA0200008D470 /* BlockKing.xcdatamodeld */,
 				7D525DD119ADA0720008D470 /* Score.h */,
 				7D525DD219ADA0720008D470 /* Score.m */,
@@ -277,6 +282,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7D80B59019AE2414001769C5 /* BKHighScoresViewController.m in Sources */,
+				7D80B59319AE3E4A001769C5 /* BKRulesViewController.m in Sources */,
 				7D525DD319ADA0720008D470 /* Score.m in Sources */,
 				7D4FF48319AB7AC700505594 /* BKViewController.m in Sources */,
 				7D525DD019ADA0200008D470 /* BlockKing.xcdatamodeld in Sources */,
