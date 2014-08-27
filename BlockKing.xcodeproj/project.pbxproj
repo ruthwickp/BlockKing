@@ -14,7 +14,6 @@
 		7D4FF47619AB7AC700505594 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4FF47519AB7AC700505594 /* main.m */; };
 		7D4FF47A19AB7AC700505594 /* BKAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4FF47919AB7AC700505594 /* BKAppDelegate.m */; };
 		7D4FF47D19AB7AC700505594 /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7D4FF47B19AB7AC700505594 /* Main_iPhone.storyboard */; };
-		7D4FF48019AB7AC700505594 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7D4FF47E19AB7AC700505594 /* Main_iPad.storyboard */; };
 		7D4FF48319AB7AC700505594 /* BKViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4FF48219AB7AC700505594 /* BKViewController.m */; };
 		7D4FF48519AB7AC700505594 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7D4FF48419AB7AC700505594 /* Images.xcassets */; };
 		7D4FF48C19AB7AC700505594 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D4FF48B19AB7AC700505594 /* XCTest.framework */; };
@@ -52,7 +51,6 @@
 		7D4FF47819AB7AC700505594 /* BKAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BKAppDelegate.h; sourceTree = "<group>"; };
 		7D4FF47919AB7AC700505594 /* BKAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BKAppDelegate.m; sourceTree = "<group>"; };
 		7D4FF47C19AB7AC700505594 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPhone.storyboard; sourceTree = "<group>"; };
-		7D4FF47F19AB7AC700505594 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
 		7D4FF48119AB7AC700505594 /* BKViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BKViewController.h; sourceTree = "<group>"; };
 		7D4FF48219AB7AC700505594 /* BKViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BKViewController.m; sourceTree = "<group>"; };
 		7D4FF48419AB7AC700505594 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -137,7 +135,6 @@
 				7D4FF47B19AB7AC700505594 /* Main_iPhone.storyboard */,
 				7D525DCB19AD2A690008D470 /* BKHomeViewController.h */,
 				7D525DCC19AD2A690008D470 /* BKHomeViewController.m */,
-				7D4FF47E19AB7AC700505594 /* Main_iPad.storyboard */,
 				7D4FF48119AB7AC700505594 /* BKViewController.h */,
 				7D4FF48219AB7AC700505594 /* BKViewController.m */,
 				7D80B58E19AE2414001769C5 /* BKHighScoresViewController.h */,
@@ -259,7 +256,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7D4FF48019AB7AC700505594 /* Main_iPad.storyboard in Resources */,
 				7D4FF48519AB7AC700505594 /* Images.xcassets in Resources */,
 				7D4FF47D19AB7AC700505594 /* Main_iPhone.storyboard in Resources */,
 				7D4FF47419AB7AC700505594 /* InfoPlist.strings in Resources */,
@@ -327,14 +323,6 @@
 			name = Main_iPhone.storyboard;
 			sourceTree = "<group>";
 		};
-		7D4FF47E19AB7AC700505594 /* Main_iPad.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				7D4FF47F19AB7AC700505594 /* Base */,
-			);
-			name = Main_iPad.storyboard;
-			sourceTree = "<group>";
-		};
 		7D4FF49419AB7AC700505594 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -381,7 +369,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -413,7 +401,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -428,6 +416,7 @@
 				GCC_PREFIX_HEADER = "BlockKing/BlockKing-Prefix.pch";
 				INFOPLIST_FILE = "BlockKing/BlockKing-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -441,6 +430,7 @@
 				GCC_PREFIX_HEADER = "BlockKing/BlockKing-Prefix.pch";
 				INFOPLIST_FILE = "BlockKing/BlockKing-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
